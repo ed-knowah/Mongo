@@ -5,7 +5,17 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended:true}));
 const PORT = 4000;
 
-mongoose.connect('mongodb://localhost/test');
+const db = 'mongodb://localhost/test';
+
+(async function () {
+    try {
+      await mongoose.connect(db, { useNewUrlParser: true });
+      return console.log(`Successfully connected to ${db}`);
+    } catch (error) {
+      console.log("Error connecting to database: ", error);
+      return process.exit(1);
+    }
+  })();
 
 // a schema describes an object
 const peopleSchema= mongoose.Schema({
@@ -35,20 +45,14 @@ app.get('/people', (req, res)=> {
 });
 
 app.post('/people', (req, res)=> {
-    const name = req.body.name;
-    const age = req.body.age;
-    const sex = req.body.sex;
-    const complexion = req.body.complexion;
-    const height = req.body.height;
-    const race = req.body.race;
 
     const person = new peopleModel();// you only create instance when you want to save something
-    person.name = name;
-    person.age = age;
-    person.sex= sex;
-    person.complexion = complexion;
-    person.height = height;
-    person.race = race;
+    person.name = req.body.name;
+    person.age = req.body.age;
+    person.sex = req.body.sex;
+    person.complexion = req.body.complexion;
+    person.height = req.body.height;
+    person.race = req.body.race;
 
     person.save((err, savedObject)=>{
         if(err){
