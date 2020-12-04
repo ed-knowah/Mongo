@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require('mongoose');const bodyParser = require("body-parser");
 const PORT = 4000;
 
-const productRoute = require('./routes/productRoute');
+const productRoute = require('./routes/peopleRoute');
 app.use(bodyParser.urlencoded({extended:true}));
 
 const db = 'mongodb://localhost/test';
