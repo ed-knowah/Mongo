@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended:true}));
 const PORT = 4000;
+const user = require('./models/user');
 
 const db = 'mongodb://localhost/test';
 
@@ -17,22 +18,10 @@ const db = 'mongodb://localhost/test';
     }
   })();
 
-// a schema describes an object
-const peopleSchema= mongoose.Schema({
-    name: String,
-    age: Number,
-    sex: String,
-    complexion: String,
-    height: Number,
-    race: String
-});
-
-//this is how to define a model
-const peopleModel = mongoose.model('people', peopleSchema);
 
 app.get('/people', (req, res)=> {
 
-    peopleModel.find({}, (err, foundData)=>{
+    user.peopleModel.find({}, (err, foundData)=>{
         if(err){
             console.log(err);
             res.status(500).send();
@@ -40,13 +29,11 @@ app.get('/people', (req, res)=> {
             res.send(foundData);
         }
     });
-
-
 });
 
 app.post('/people', (req, res)=> {
 
-    const person = new peopleModel();// you only create instance when you want to save something
+    const person = new user.peopleModel();// you only create instance when you want to save something
     person.name = req.body.name;
     person.age = req.body.age;
     person.sex = req.body.sex;
@@ -66,7 +53,7 @@ app.post('/people', (req, res)=> {
 
 app.delete('/people/:id', (req, res)=> {
     const id = req.params.id;
-    peopleModel.findOneAndRemove({_id: id}, (err)=>{
+    user.peopleModel.findOneAndRemove({_id: id}, (err)=>{
         if(err){
             console.log(err);
             res.status(500).send();
@@ -74,7 +61,6 @@ app.delete('/people/:id', (req, res)=> {
         res.write('delete successfull');
         return res.status(200).send();
     });
-  
 });
 
 app.listen(PORT, ()=>{
